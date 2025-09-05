@@ -1,31 +1,36 @@
 import asyncio
 import re
 import logging
+import os
+import json
+import time
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
-import json
-import os
-from dotenv import load_dotenv
+from threading import Thread
+import signal
+import sys
 
-# Required packages: pip install telethon python-dotenv
+# Required packages: pip install telethon python-dotenv aiofiles
 from telethon import TelegramClient, events
 from telethon.tl.types import Channel
 from telethon.errors import SessionPasswordNeededError
+from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
-# Configure logging
+# Configure logging for cloud environments
+log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(
-    level=logging.INFO,
+    level=getattr(logging, log_level),
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('bitcoin_signals.log'),
-        logging.StreamHandler()
-    ]
+    handlers=[logging.StreamHandler()]  # Only console output for cloud
 )
 logger = logging.getLogger(__name__)
+
+# Global flag for graceful shutdown
+shutdown_flag = False
 
 @dataclass
 class TradingSignal:
@@ -73,20 +78,12 @@ class BitcoinSignalExtractor:
         # Signal type patterns
         self.buy_patterns = [
             r'\b(BUY|LONG|BULL|BULLISH|ENTER\s*LONG)\b',
-            r'📈',
-            r'🟢',
-            r'⬆️',
-            r'🚀',
-            r'💚'
+            r'📈', r'🟢', r'⬆️', r'🚀', r'💚'
         ]
         
         self.sell_patterns = [
             r'\b(SELL|SHORT|BEAR|BEARISH|ENTER\s*SHORT)\b',
-            r'📉',
-            r'🔴',
-            r'⬇️',
-            r'💥',
-            r'❤️'
+            r'📉', r'🔴', r'⬇️', r'💥', r'❤️'
         ]
         
         # Price patterns
@@ -194,8 +191,8 @@ class BitcoinSignalExtractor:
         
         return None
 
-class TelegramSignalMonitor:
-    """Main class to monitor Telegram channels for Bitcoin signals"""
+class CloudTelegramSignalMonitor:
+    """Cloud-optimized Telegram signal monitor"""
     
     def __init__(self):
         # Load configuration from environment variables
@@ -205,147 +202,137 @@ class TelegramSignalMonitor:
         
         # Validate required credentials
         if not self.api_id or not self.api_hash:
-            raise ValueError("TELEGRAM_API_ID and TELEGRAM_API_HASH must be set in .env file")
+            raise ValueError("TELEGRAM_API_ID and TELEGRAM_API_HASH must be set as environment variables")
         
         self.api_id = int(self.api_id)
         self.client = None
         self.signal_extractor = BitcoinSignalExtractor()
         self.signals = []  # Store signals in memory
+        self.last_signal_time = datetime.now()
         
-        # Load channels from environment or set defaults
+        # Load channels from environment
         channels_env = os.getenv('CHANNELS', '')
         if channels_env:
             self.channels_to_monitor = [channel.strip() for channel in channels_env.split(',')]
         else:
-            # Default channels - you should replace these with actual channels you have access to
-            self.channels_to_monitor = []
-            logger.warning("No CHANNELS specified in .env file. Add channels manually using add_channel() method.")
+            raise ValueError("CHANNELS must be set in environment variables")
+        
+        # Cloud-specific settings
+        self.session_string = os.getenv('TELEGRAM_SESSION_STRING', '')
+        self.webhook_url = os.getenv('WEBHOOK_URL', '')  # Optional webhook for signals
+        
+        logger.info(f"Initialized monitor for {len(self.channels_to_monitor)} channels")
     
     async def initialize(self):
-        """Initialize Telegram client and handle authentication"""
-        logger.info("Initializing Telegram client...")
+        """Initialize Telegram client with cloud-optimized session handling"""
+        logger.info("Initializing Telegram client for cloud deployment...")
         
-        self.client = TelegramClient('bitcoin_signals_session', self.api_id, self.api_hash)
+        # Use session string if available, otherwise create new session
+        if self.session_string:
+            logger.info("Using session string from environment")
+            self.client = TelegramClient.from_string(
+                session=self.session_string,
+                api_id=self.api_id,
+                api_hash=self.api_hash
+            )
+        else:
+            logger.info("Creating new session")
+            self.client = TelegramClient(
+                session='bitcoin_signals_cloud',
+                api_id=self.api_id,
+                api_hash=self.api_hash
+            )
         
         try:
             await self.client.start()
             
-            # Check if we need to authenticate
+            # Handle authentication if needed
             if not await self.client.is_user_authorized():
-                logger.info("Authentication required...")
-                
                 if not self.phone_number:
-                    self.phone_number = input("Enter your phone number (with country code, e.g., +1234567890): ")
+                    raise ValueError("TELEGRAM_PHONE must be set for first-time authentication")
                 
-                # Send code
+                logger.info("Authentication required - this should only happen once")
                 await self.client.send_code_request(self.phone_number)
-                logger.info(f"Verification code sent to {self.phone_number}")
                 
-                # Get code from user
-                code = input('Enter the verification code: ')
-                
-                try:
-                    await self.client.sign_in(self.phone_number, code)
-                except SessionPasswordNeededError:
-                    # Two-factor authentication
-                    password = input('Two-factor authentication enabled. Enter your password: ')
-                    await self.client.sign_in(password=password)
+                # For cloud deployment, you might need to handle this differently
+                # You could use a webhook or manual intervention
+                raise RuntimeError("Manual authentication required. Please run locally first to create session.")
             
             # Get user info
             me = await self.client.get_me()
-            logger.info(f"Successfully connected as: {me.first_name} {me.last_name or ''} ({me.phone})")
+            logger.info(f"Successfully connected as: {me.first_name} ({me.phone})")
+            
+            # Save session string for future use (print it once for manual copying)
+            if not self.session_string:
+                session_string = self.client.session.save()
+                logger.info("=" * 60)
+                logger.info("IMPORTANT: Save this session string as TELEGRAM_SESSION_STRING environment variable:")
+                logger.info(session_string)
+                logger.info("=" * 60)
             
         except Exception as e:
             logger.error(f"Failed to initialize Telegram client: {e}")
             raise
     
-    async def add_channel(self, channel_username: str) -> bool:
-        """Add a channel to monitor"""
-        try:
-            # Remove @ if present
-            channel_username = channel_username.lstrip('@')
-            
-            entity = await self.client.get_entity(channel_username)
-            if isinstance(entity, Channel):
-                if channel_username not in self.channels_to_monitor:
-                    self.channels_to_monitor.append(channel_username)
-                    logger.info(f"Added channel: {entity.title} (@{channel_username})")
-                else:
-                    logger.info(f"Channel @{channel_username} already being monitored")
-                return True
-            else:
-                logger.error(f"@{channel_username} is not a channel")
-                return False
-        except Exception as e:
-            logger.error(f"Error adding channel @{channel_username}: {e}")
-            return False
-    
-    async def list_available_channels(self):
-        """List channels you have access to"""
-        logger.info("Listing available channels...")
+    async def validate_channels(self):
+        """Validate access to all channels"""
+        logger.info("Validating channel access...")
         
-        channels = []
-        async for dialog in self.client.iter_dialogs():
-            if isinstance(dialog.entity, Channel):
-                username = getattr(dialog.entity, 'username', None)
-                channels.append({
-                    'name': dialog.name,
-                    'username': username,
-                    'id': dialog.entity.id
-                })
-        
-        if channels:
-            logger.info(f"Found {len(channels)} channels:")
-            for i, channel in enumerate(channels, 1):
-                username_str = f"@{channel['username']}" if channel['username'] else "No username"
-                logger.info(f"  {i}. {channel['name']} ({username_str})")
-        else:
-            logger.info("No channels found")
-        
-        return channels
-    
-    async def start_monitoring(self):
-        """Start monitoring channels for signals"""
-        if not self.client:
-            await self.initialize()
-        
-        if not self.channels_to_monitor:
-            logger.error("No channels to monitor. Use add_channel() to add channels or set CHANNELS in .env file.")
-            return
-        
-        logger.info(f"Starting to monitor {len(self.channels_to_monitor)} channels: {', '.join(self.channels_to_monitor)}")
-        
-        # Verify channel access
         valid_channels = []
         for channel in self.channels_to_monitor:
             try:
                 entity = await self.client.get_entity(channel)
-                valid_channels.append(channel)
-                logger.info(f"✅ Access confirmed for: {entity.title} (@{channel})")
+                if isinstance(entity, Channel):
+                    valid_channels.append(channel)
+                    logger.info(f"✅ Access confirmed: {entity.title} (@{channel})")
+                else:
+                    logger.warning(f"❌ @{channel} is not a channel")
             except Exception as e:
-                logger.error(f"❌ Cannot access channel @{channel}: {e}")
+                logger.error(f"❌ Cannot access @{channel}: {e}")
+        
+        if not valid_channels:
+            raise ValueError("No valid channels found. Check your CHANNELS environment variable.")
         
         self.channels_to_monitor = valid_channels
+        logger.info(f"Will monitor {len(valid_channels)} valid channels")
+    
+    async def start_monitoring(self):
+        """Start monitoring channels for signals"""
+        global shutdown_flag
         
-        if not self.channels_to_monitor:
-            logger.error("No valid channels to monitor")
-            return
+        if not self.client:
+            await self.initialize()
         
-        # Register event handler for new messages
+        await self.validate_channels()
+        
+        logger.info("🤖 Starting Bitcoin signal monitoring...")
+        logger.info(f"Monitoring channels: {', '.join(self.channels_to_monitor)}")
+        
+        # Register event handler
         @self.client.on(events.NewMessage)
         async def message_handler(event):
+            if shutdown_flag:
+                return
             await self._process_message(event)
         
-        logger.info("🤖 Bot is now monitoring for Bitcoin signals...")
-        logger.info("Press Ctrl+C to stop monitoring")
+        # Start health check thread
+        if os.getenv('ENABLE_HEALTH_CHECK', 'false').lower() == 'true':
+            Thread(target=self._health_check_loop, daemon=True).start()
         
-        # Keep the client running
-        try:
-            await self.client.run_until_disconnected()
-        except KeyboardInterrupt:
-            logger.info("Monitoring stopped by user")
-        finally:
-            await self.client.disconnect()
+        # Main monitoring loop with reconnection logic
+        while not shutdown_flag:
+            try:
+                logger.info("🚀 Bot is now monitoring for Bitcoin signals...")
+                await self.client.run_until_disconnected()
+            except Exception as e:
+                logger.error(f"Connection lost: {e}")
+                if not shutdown_flag:
+                    logger.info("Attempting to reconnect in 30 seconds...")
+                    await asyncio.sleep(30)
+                    try:
+                        await self.client.connect()
+                    except Exception as reconnect_error:
+                        logger.error(f"Reconnection failed: {reconnect_error}")
     
     async def _process_message(self, event):
         """Process incoming message and extract signals"""
@@ -359,7 +346,6 @@ class TelegramSignalMonitor:
                 return
             
             message_text = event.message.text or ""
-            
             if not message_text:
                 return
             
@@ -368,190 +354,156 @@ class TelegramSignalMonitor:
             
             if signal:
                 self.signals.append(signal)
-                logger.info(f"🚨 New signal detected: {signal.signal_type} BTC from @{channel_username}")
+                self.last_signal_time = datetime.now()
                 
-                # Save signal to file
-                await self._save_signal(signal)
+                logger.info(f"🚨 NEW SIGNAL: {signal.signal_type} BTC from @{channel_username}")
                 
-                # Trigger custom callback
+                # Process the signal
                 await self._on_signal_received(signal)
-        
+                
         except Exception as e:
             logger.error(f"Error processing message: {e}")
     
-    async def _save_signal(self, signal: TradingSignal):
-        """Save signal to JSON file"""
-        try:
-            # Create signals directory if it doesn't exist
-            os.makedirs('signals', exist_ok=True)
-            
-            filename = f"signals/signals_{datetime.now().strftime('%Y%m%d')}.json"
-            
-            # Load existing signals
-            signals_data = []
-            if os.path.exists(filename):
-                with open(filename, 'r', encoding='utf-8') as f:
-                    signals_data = json.load(f)
-            
-            # Add new signal
-            signals_data.append(signal.to_dict())
-            
-            # Save back to file
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(signals_data, f, indent=2, ensure_ascii=False)
-            
-            logger.info(f"Signal saved to {filename}")
-            
-        except Exception as e:
-            logger.error(f"Error saving signal: {e}")
-    
     async def _on_signal_received(self, signal: TradingSignal):
-        """Custom callback when signal is received - implement your trading logic here"""
-        print(f"\n{'='*60}")
-        print(f"🚨 NEW BITCOIN SIGNAL DETECTED 🚨")
-        print(f"{'='*60}")
-        print(f"📊 Signal Type: {signal.signal_type}")
-        print(f"💰 Symbol: {signal.symbol}")
-        print(f"💵 Current Price: ${signal.price:,.2f}" if signal.price else "💵 Current Price: N/A")
-        print(f"🎯 Target Price: ${signal.target_price:,.2f}" if signal.target_price else "🎯 Target Price: N/A")
-        print(f"🛑 Stop Loss: ${signal.stop_loss:,.2f}" if signal.stop_loss else "🛑 Stop Loss: N/A")
-        print(f"📈 Confidence: {signal.confidence}" if signal.confidence else "📈 Confidence: N/A")
-        print(f"📺 Channel: @{signal.channel_name}")
-        print(f"⏰ Time: {signal.timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"📝 Raw Message Preview:")
-        print(f"   {signal.raw_message[:200]}{'...' if len(signal.raw_message) > 200 else ''}")
-        print(f"{'='*60}\n")
+        """Handle new signal - optimized for cloud deployment"""
         
-        # TODO: Implement your trading logic here
-        # Examples:
-        # - Send to your trading bot API
-        # - Update database
-        # - Send email/SMS notifications
-        # - Calculate position size
-        # - Place orders on exchange
+        # Log the signal details
+        signal_info = {
+            'type': signal.signal_type,
+            'symbol': signal.symbol,
+            'price': signal.price,
+            'target': signal.target_price,
+            'stop_loss': signal.stop_loss,
+            'confidence': signal.confidence,
+            'channel': signal.channel_name,
+            'timestamp': signal.timestamp.isoformat()
+        }
+        
+        logger.info(f"Signal Details: {json.dumps(signal_info, indent=2)}")
+        
+        # Send to webhook if configured
+        if self.webhook_url:
+            await self._send_webhook(signal)
+        
+        # Store signal (in cloud environment, consider using database)
+        await self._store_signal(signal)
+        
+        # Print formatted output
+        print(f"\n🚨 BITCOIN SIGNAL ALERT 🚨")
+        print(f"Signal: {signal.signal_type} {signal.symbol}")
+        print(f"Price: ${signal.price:,.2f}" if signal.price else "Price: N/A")
+        print(f"Target: ${signal.target_price:,.2f}" if signal.target_price else "Target: N/A")
+        print(f"Stop Loss: ${signal.stop_loss:,.2f}" if signal.stop_loss else "Stop Loss: N/A")
+        print(f"Channel: @{signal.channel_name}")
+        print(f"Time: {signal.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC')}")
+        print(f"Raw: {signal.raw_message[:150]}...")
+        print("=" * 50)
     
-    def get_recent_signals(self, hours: int = 24) -> List[TradingSignal]:
-        """Get signals from the last N hours"""
-        cutoff_time = datetime.now() - timedelta(hours=hours)
-        return [signal for signal in self.signals if signal.timestamp >= cutoff_time]
-    
-    async def get_channel_history(self, channel_username: str, limit: int = 100):
-        """Get historical messages from a channel to backtest signal extraction"""
+    async def _send_webhook(self, signal: TradingSignal):
+        """Send signal to webhook URL"""
         try:
-            entity = await self.client.get_entity(channel_username)
-            signals = []
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                payload = signal.to_dict()
+                async with session.post(self.webhook_url, json=payload) as response:
+                    if response.status == 200:
+                        logger.info("Signal sent to webhook successfully")
+                    else:
+                        logger.warning(f"Webhook responded with status {response.status}")
+        except Exception as e:
+            logger.error(f"Failed to send webhook: {e}")
+    
+    async def _store_signal(self, signal: TradingSignal):
+        """Store signal (in cloud, consider using a database)"""
+        try:
+            # For now, just keep in memory and log
+            # In production, use a database like PostgreSQL, MongoDB, etc.
+            signal_data = signal.to_dict()
             
-            logger.info(f"Analyzing last {limit} messages from @{channel_username}...")
+            # You could send to a database here
+            # await database.store_signal(signal_data)
             
-            async for message in self.client.iter_messages(entity, limit=limit):
-                if message.text:
-                    signal = self.signal_extractor.extract_signal(message.text, channel_username)
-                    if signal:
-                        signal.timestamp = message.date
-                        signals.append(signal)
-            
-            logger.info(f"Found {len(signals)} signals in channel history")
-            return signals
+            logger.info("Signal stored successfully")
             
         except Exception as e:
-            logger.error(f"Error getting channel history: {e}")
-            return []
+            logger.error(f"Failed to store signal: {e}")
+    
+    def _health_check_loop(self):
+        """Health check loop to prevent sleeping on some platforms"""
+        while not shutdown_flag:
+            try:
+                logger.info(f"Health check - Active channels: {len(self.channels_to_monitor)}, "
+                           f"Total signals: {len(self.signals)}, "
+                           f"Last signal: {(datetime.now() - self.last_signal_time).seconds}s ago")
+                time.sleep(300)  # Every 5 minutes
+            except Exception as e:
+                logger.error(f"Health check error: {e}")
+                time.sleep(300)
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get monitoring statistics"""
+        return {
+            'total_signals': len(self.signals),
+            'channels_monitored': len(self.channels_to_monitor),
+            'last_signal_time': self.last_signal_time.isoformat(),
+            'uptime_seconds': (datetime.now() - self.last_signal_time).total_seconds()
+        }
 
-# Main execution functions
-async def setup_channels(monitor: TelegramSignalMonitor):
-    """Interactive setup for adding channels"""
-    logger.info("Setting up channels...")
-    
-    # List available channels
-    await monitor.list_available_channels()
-    
-    while True:
-        print(f"\nCurrent monitored channels: {', '.join(monitor.channels_to_monitor) if monitor.channels_to_monitor else 'None'}")
-        print("\nOptions:")
-        print("1. Add a channel")
-        print("2. Start monitoring")
-        print("3. Test channel history")
-        print("4. Quit")
-        
-        choice = input("Enter your choice (1-4): ").strip()
-        
-        if choice == "1":
-            channel = input("Enter channel username (without @): ").strip()
-            if channel:
-                success = await monitor.add_channel(channel)
-                if success:
-                    print(f"✅ Channel @{channel} added successfully")
-                else:
-                    print(f"❌ Failed to add channel @{channel}")
-        
-        elif choice == "2":
-            if monitor.channels_to_monitor:
-                break
-            else:
-                print("❌ No channels to monitor. Please add at least one channel.")
-        
-        elif choice == "3":
-            if monitor.channels_to_monitor:
-                channel = input(f"Test which channel? ({', '.join(monitor.channels_to_monitor)}): ").strip()
-                if channel in monitor.channels_to_monitor:
-                    signals = await monitor.get_channel_history(channel, 50)
-                    if signals:
-                        print(f"\n📊 Found {len(signals)} historical signals:")
-                        for i, signal in enumerate(signals[-5:], 1):  # Show last 5
-                            print(f"  {i}. {signal.signal_type} at ${signal.price} ({signal.timestamp.strftime('%Y-%m-%d %H:%M')})")
-                    else:
-                        print("No signals found in recent history")
-            else:
-                print("No channels added yet")
-        
-        elif choice == "4":
-            return False
-        
-        else:
-            print("Invalid choice")
-    
-    return True
+def signal_handler(signum, frame):
+    """Handle shutdown signals gracefully"""
+    global shutdown_flag
+    logger.info("Received shutdown signal, stopping gracefully...")
+    shutdown_flag = True
 
 async def main():
-    """Main function"""
-    print("🤖 Bitcoin Telegram Signal Monitor")
-    print("==================================")
+    """Main function optimized for cloud deployment"""
+    global shutdown_flag
+    
+    # Set up signal handlers for graceful shutdown
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+    
+    logger.info("🤖 Starting Bitcoin Telegram Signal Monitor (Cloud Version)")
+    logger.info("=" * 60)
+    
+    # Validate environment
+    required_vars = ['TELEGRAM_API_ID', 'TELEGRAM_API_HASH', 'CHANNELS']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        logger.error(f"Missing required environment variables: {', '.join(missing_vars)}")
+        sys.exit(1)
     
     try:
-        # Create monitor instance
-        monitor = TelegramSignalMonitor()
-        
-        # Initialize connection
+        # Create and initialize monitor
+        monitor = CloudTelegramSignalMonitor()
         await monitor.initialize()
         
-        # Setup channels interactively if none configured
-        if not monitor.channels_to_monitor:
-            should_continue = await setup_channels(monitor)
-            if not should_continue:
-                logger.info("Setup cancelled by user")
-                return
-        
         # Start monitoring
-        logger.info("Starting Bitcoin signal monitoring service...")
         await monitor.start_monitoring()
         
-    except KeyboardInterrupt:
-        logger.info("Application stopped by user")
     except ValueError as e:
         logger.error(f"Configuration error: {e}")
-        logger.error("Please check your .env file")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        logger.info("Received keyboard interrupt")
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
+        sys.exit(1)
+    finally:
+        logger.info("Application shutting down...")
 
 if __name__ == "__main__":
-    # Print startup information
-    print("Starting Bitcoin Signal Monitor...")
-    print("Make sure your .env file is configured with:")
-    print("- TELEGRAM_API_ID")
-    print("- TELEGRAM_API_HASH") 
-    print("- TELEGRAM_PHONE (optional)")
-    print("- CHANNELS (optional, comma-separated)")
-    print()
+    # Environment variable validation
+    if not all([os.getenv('TELEGRAM_API_ID'), os.getenv('TELEGRAM_API_HASH')]):
+        print("❌ Error: Missing required environment variables")
+        print("Set these environment variables in your hosting platform:")
+        print("- TELEGRAM_API_ID")
+        print("- TELEGRAM_API_HASH")
+        print("- TELEGRAM_PHONE (for first setup)")
+        print("- CHANNELS (comma-separated channel usernames)")
+        print("- TELEGRAM_SESSION_STRING (after first setup)")
+        sys.exit(1)
     
     # Run the application
     asyncio.run(main())

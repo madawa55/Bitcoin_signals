@@ -1,0 +1,15 @@
+app = "bitcoin-signals-bot"
+primary_region = "dfw"
+
+[build]
+  builder = "paketobuildpacks/builder:base"
+
+[[services]]
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
