@@ -178,11 +178,12 @@ class BinanceManager:
     def get_top_symbols(self) -> List[str]:
         """Get top trading symbols"""
         try:
+            # Get all tickers - correct method name
             tickers = self.client.get_ticker()
             # Filter USDT pairs and sort by volume
             usdt_pairs = [
                 ticker for ticker in tickers
-                if ticker['symbol'].endswith('USDT') and ticker['symbol'] != 'USDT'
+                if ticker['symbol'].endswith('USDT') and ticker['symbol'] != 'USDTUSDT'
             ]
 
             # Sort by volume and get top 20
@@ -451,5 +452,6 @@ if __name__ == "__main__":
         )
     else:
         # Local development
+        logger.info("💻 Running locally")
         dashboard = DashboardApp()
         dashboard.run(host=host, port=port, debug=debug)
