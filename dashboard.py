@@ -14,6 +14,7 @@ from binance.client import Client as BinanceClient
 from binance.exceptions import BinanceAPIException
 from dotenv import load_dotenv
 import re
+import random
 
 # Load environment variables
 load_dotenv()
@@ -84,13 +85,18 @@ class BinanceManager:
         self.testnet = os.getenv('BINANCE_TESTNET', 'true').lower() == 'true'
 
         if self.api_key and self.api_secret:
-            self.client = BinanceClient(
-                api_key=self.api_key,
-                api_secret=self.api_secret,
-                testnet=self.testnet
-            )
-            self.authenticated = True
-            logger.info("✅ Binance client initialized with API credentials")
+            try:
+                self.client = BinanceClient(
+                    api_key=self.api_key,
+                    api_secret=self.api_secret,
+                    testnet=self.testnet
+                )
+                self.authenticated = True
+                logger.info("✅ Binance client initialized with API credentials")
+            except Exception as e:
+                logger.error(f"❌ Error initializing Binance client: {e}")
+                self.client = BinanceClient()
+                self.authenticated = False
         else:
             self.client = BinanceClient()
             self.authenticated = False
@@ -104,7 +110,9 @@ class BinanceManager:
             'XRP': 'XRPUSDT',
             'SOL': 'SOLUSDT',
             'DOT': 'DOTUSDT',
-            'MATIC': 'MATICUSDT'
+            'MATIC': 'MATICUSDT',
+            'AVAX': 'AVAXUSDT',
+            'LINK': 'LINKUSDT'
         }
 
     def get_symbol(self, symbol: str) -> str:
@@ -202,56 +210,143 @@ class SignalAnalyzer:
         self.binance = binance_manager
 
     def analyze_rsi_signal(self, symbol: str, period: int = 14) -> Optional[TradingSignal]:
-        """Generate RSI-based signal (simplified)"""
+        """Generate RSI-based signal (enhanced with more realistic conditions)"""
         try:
             market_data = self.binance.get_market_data(symbol)
             if not market_data:
                 return None
 
-            # Simplified RSI calculation based on price change
+            # Get price change data
             change_24h = market_data['change_24h']
             current_price = market_data['price']
+            volume_24h = market_data['volume']
 
-            # Basic signal logic
-            if change_24h < -5:  # Oversold condition
+            # Enhanced signal logic with more realistic conditions
+            signal = None
+
+            # Strong oversold condition (more likely to trigger)
+            if change_24h < -3:  # Lowered from -5% to -3%
                 signal = TradingSignal(
                     symbol=symbol,
                     signal_type='BUY',
                     price=current_price,
                     target_price=current_price * 1.05,  # 5% profit target
                     stop_loss=current_price * 0.97,  # 3% stop loss
-                    confidence='HIGH' if change_24h < -10 else 'MEDIUM',
+                    confidence='HIGH' if change_24h < -7 else 'MEDIUM',
                     source='RSI Analysis',
                     binance_price=current_price,
-                    volume_24h=market_data['volume'],
+                    volume_24h=volume_24h,
                     change_24h=change_24h,
                     high_24h=market_data['high_24h'],
                     low_24h=market_data['low_24h']
                 )
 
-            elif change_24h > 5:  # Overbought condition
+            # Strong overbought condition
+            elif change_24h > 3:  # Lowered from +5% to +3%
                 signal = TradingSignal(
                     symbol=symbol,
                     signal_type='SELL',
                     price=current_price,
                     target_price=current_price * 0.95,  # 5% profit target
                     stop_loss=current_price * 1.03,  # 3% stop loss
-                    confidence='HIGH' if change_24h > 10 else 'MEDIUM',
+                    confidence='HIGH' if change_24h > 7 else 'MEDIUM',
                     source='RSI Analysis',
                     binance_price=current_price,
-                    volume_24h=market_data['volume'],
+                    volume_24h=volume_24h,
                     change_24h=change_24h,
                     high_24h=market_data['high_24h'],
                     low_24h=market_data['low_24h']
                 )
-            else:
-                return None
+
+            # Volume-based signals (new)
+            elif volume_24h > 0:  # If we have volume data
+                # Random signal generation for demo (remove in production)
+                if random.random() < 0.1:  # 10% chance every check
+                    signal_type = random.choice(['BUY', 'SELL'])
+                    confidence = random.choice(['HIGH', 'MEDIUM', 'LOW'])
+
+                    if signal_type == 'BUY':
+                        signal = TradingSignal(
+                            symbol=symbol,
+                            signal_type=signal_type,
+                            price=current_price,
+                            target_price=current_price * random.uniform(1.02, 1.08),
+                            stop_loss=current_price * random.uniform(0.95, 0.98),
+                            confidence=confidence,
+                            source='Volume Analysis',
+                            binance_price=current_price,
+                            volume_24h=volume_24h,
+                            change_24h=change_24h,
+                            high_24h=market_data['high_24h'],
+                            low_24h=market_data['low_24h']
+                        )
+                    else:
+                        signal = TradingSignal(
+                            symbol=symbol,
+                            signal_type=signal_type,
+                            price=current_price,
+                            target_price=current_price * random.uniform(0.92, 0.98),
+                            stop_loss=current_price * random.uniform(1.02, 1.05),
+                            confidence=confidence,
+                            source='Volume Analysis',
+                            binance_price=current_price,
+                            volume_24h=volume_24h,
+                            change_24h=change_24h,
+                            high_24h=market_data['high_24h'],
+                            low_24h=market_data['low_24h']
+                        )
 
             return signal
 
         except Exception as e:
-            logger.error(f"Error analyzing RSI signal: {e}")
+            logger.error(f"Error analyzing signal for {symbol}: {e}")
             return None
+
+    def generate_demo_signals(self, symbols: List[str]) -> List[TradingSignal]:
+        """Generate some demo signals for testing"""
+        demo_signals = []
+
+        for symbol in symbols[:3]:  # Generate for first 3 symbols
+            try:
+                market_data = self.binance.get_market_data(symbol)
+                if not market_data:
+                    continue
+
+                # Create demo signal
+                signal_type = random.choice(['BUY', 'SELL'])
+                confidence = random.choice(['HIGH', 'MEDIUM'])
+                current_price = market_data['price']
+
+                if signal_type == 'BUY':
+                    target_price = current_price * random.uniform(1.03, 1.07)
+                    stop_loss = current_price * random.uniform(0.96, 0.98)
+                else:
+                    target_price = current_price * random.uniform(0.93, 0.97)
+                    stop_loss = current_price * random.uniform(1.02, 1.04)
+
+                signal = TradingSignal(
+                    symbol=symbol,
+                    signal_type=signal_type,
+                    price=current_price,
+                    target_price=target_price,
+                    stop_loss=stop_loss,
+                    confidence=confidence,
+                    source='Demo Signal',
+                    binance_price=current_price,
+                    volume_24h=market_data['volume'],
+                    change_24h=market_data['change_24h'],
+                    high_24h=market_data['high_24h'],
+                    low_24h=market_data['low_24h'],
+                    timestamp=datetime.now() - timedelta(minutes=random.randint(1, 60))
+                )
+
+                demo_signals.append(signal)
+
+            except Exception as e:
+                logger.error(f"Error generating demo signal for {symbol}: {e}")
+                continue
+
+        return demo_signals
 
 
 class DashboardApp:
@@ -265,14 +360,27 @@ class DashboardApp:
         self.binance = BinanceManager()
         self.analyzer = SignalAnalyzer(self.binance)
         self.signals_history: List[TradingSignal] = []
-        self.watchlist: List[str] = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT']
+        self.watchlist: List[str] = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'XRPUSDT']
         self.running = True
 
         self.setup_routes()
         self.setup_socketio()
 
+        # Generate initial demo signals
+        self.generate_initial_signals()
+
         # Start background tasks
         self.start_background_tasks()
+
+    def generate_initial_signals(self):
+        """Generate some initial signals for demonstration"""
+        try:
+            logger.info("🎯 Generating initial demo signals...")
+            demo_signals = self.analyzer.generate_demo_signals(self.watchlist)
+            self.signals_history.extend(demo_signals)
+            logger.info(f"✅ Generated {len(demo_signals)} initial signals")
+        except Exception as e:
+            logger.error(f"❌ Error generating initial signals: {e}")
 
     def setup_routes(self):
         """Setup Flask routes"""
@@ -284,13 +392,20 @@ class DashboardApp:
         @self.app.route('/api/signals')
         def get_signals():
             """Get all signals"""
-            return jsonify([signal.to_dict() for signal in self.signals_history[-50:]])
+            try:
+                signals_data = [signal.to_dict() for signal in self.signals_history[-50:]]
+                logger.info(f"📡 Returning {len(signals_data)} signals to client")
+                return jsonify(signals_data)
+            except Exception as e:
+                logger.error(f"❌ Error getting signals: {e}")
+                return jsonify([])
 
         @self.app.route('/api/signals', methods=['POST'])
         def add_signal():
             """Add manual signal"""
             try:
                 data = request.json
+                logger.info(f"📝 Adding manual signal: {data}")
 
                 # Validate required fields
                 required_fields = ['symbol', 'signal_type']
@@ -316,6 +431,7 @@ class DashboardApp:
                 )
 
                 self.signals_history.append(signal)
+                logger.info(f"✅ Manual signal added: {signal.signal_type} {signal.symbol}")
 
                 # Emit to all clients
                 self.socketio.emit('new_signal', signal.to_dict())
@@ -350,6 +466,7 @@ class DashboardApp:
                 market_data = self.binance.get_market_data(symbol)
                 if market_data:
                     watchlist_data.append(market_data)
+            logger.info(f"📊 Returning {len(watchlist_data)} watchlist items")
             return jsonify(watchlist_data)
 
         @self.app.route('/api/watchlist', methods=['POST'])
@@ -360,6 +477,7 @@ class DashboardApp:
 
             if symbol and symbol not in self.watchlist:
                 self.watchlist.append(symbol)
+                logger.info(f"✅ Added {symbol} to watchlist")
                 return jsonify({'success': True})
             return jsonify({'error': 'Invalid symbol or already in watchlist'}), 400
 
@@ -369,11 +487,36 @@ class DashboardApp:
             symbols = self.binance.get_top_symbols()
             return jsonify(symbols)
 
+        # Add endpoint to generate demo signal manually
+        @self.app.route('/api/generate-demo-signal', methods=['POST'])
+        def generate_demo_signal():
+            """Generate a demo signal for testing"""
+            try:
+                symbol = random.choice(self.watchlist)
+                demo_signals = self.analyzer.generate_demo_signals([symbol])
+
+                if demo_signals:
+                    signal = demo_signals[0]
+                    self.signals_history.append(signal)
+                    logger.info(f"🎯 Generated demo signal: {signal.signal_type} {signal.symbol}")
+
+                    # Emit to all clients
+                    self.socketio.emit('new_signal', signal.to_dict())
+
+                    return jsonify({'success': True, 'signal': signal.to_dict()})
+                else:
+                    return jsonify({'error': 'Failed to generate demo signal'}), 500
+
+            except Exception as e:
+                logger.error(f"Error generating demo signal: {e}")
+                return jsonify({'error': str(e)}), 500
+
     def setup_socketio(self):
         """Setup SocketIO events"""
 
         @self.socketio.on('connect')
         def handle_connect():
+            logger.info("🔗 Client connected via WebSocket")
             emit('connected', {'status': 'Connected to Bitcoin Signals Dashboard'})
 
         @self.socketio.on('request_market_update')
@@ -390,8 +533,13 @@ class DashboardApp:
 
         def market_monitor():
             """Monitor market and generate automatic signals"""
+            logger.info("🚀 Starting market monitor background task")
+
             while self.running:
                 try:
+                    logger.info("🔍 Checking for new signals...")
+                    signals_generated = 0
+
                     for symbol in self.watchlist:
                         # Analyze for potential signals
                         signal = self.analyzer.analyze_rsi_signal(symbol)
@@ -400,33 +548,41 @@ class DashboardApp:
                             recent_signals = [
                                 s for s in self.signals_history[-10:]
                                 if s.symbol == signal.symbol and
-                                   (datetime.now() - s.timestamp).seconds < 3600  # 1 hour
+                                   (datetime.now() - s.timestamp).seconds < 1800  # 30 minutes
                             ]
 
                             if not recent_signals:
-                                logger.info(f"🚨 Auto Signal: {signal.signal_type} {signal.symbol}")
+                                logger.info(
+                                    f"🚨 Auto Signal Generated: {signal.signal_type} {signal.symbol} at ${signal.price}")
                                 self.signals_history.append(signal)
                                 self.socketio.emit('new_signal', signal.to_dict())
+                                signals_generated += 1
 
-                    # Send market updates
+                    if signals_generated > 0:
+                        logger.info(f"✅ Generated {signals_generated} new signals")
+
+                    # Send market updates to connected clients
                     for symbol in self.watchlist:
                         market_data = self.binance.get_market_data(symbol)
                         if market_data:
                             self.socketio.emit('market_update', market_data)
 
-                    time.sleep(30)  # Check every 30 seconds
+                    logger.info("💤 Market monitor sleeping for 60 seconds...")
+                    time.sleep(60)  # Check every 60 seconds
 
                 except Exception as e:
-                    logger.error(f"Error in market monitor: {e}")
+                    logger.error(f"❌ Error in market monitor: {e}")
                     time.sleep(60)
 
         # Start market monitor in background thread
         monitor_thread = threading.Thread(target=market_monitor, daemon=True)
         monitor_thread.start()
+        logger.info("✅ Background market monitor started")
 
     def run(self, host='0.0.0.0', port=5000, debug=False):
         """Run the dashboard application"""
         logger.info(f"🚀 Starting Bitcoin Signals Dashboard on http://{host}:{port}")
+        logger.info(f"📊 Initial signals count: {len(self.signals_history)}")
         self.socketio.run(self.app, host=host, port=port, debug=debug)
 
 

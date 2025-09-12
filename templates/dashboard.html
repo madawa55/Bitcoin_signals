@@ -250,6 +250,16 @@
             color: white;
         }
 
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
         /* Watchlist Styles */
         .watchlist-container {
             max-height: 500px;
@@ -443,6 +453,22 @@
             opacity: 0.5;
         }
 
+        /* Demo controls */
+        .demo-controls {
+            background: #fff3cd;
+            border: 2px solid #ffecb5;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .demo-controls h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container { padding: 15px; }
@@ -504,6 +530,15 @@
             <!-- Add Signal Card -->
             <div class="card">
                 <h2><i class="fas fa-plus-circle"></i> Add Signal</h2>
+
+                <!-- Demo Controls -->
+                <div class="demo-controls">
+                    <h3><i class="fas fa-flask"></i> Demo Mode</h3>
+                    <button class="btn btn-warning btn-small" onclick="generateDemoSignal()">
+                        <i class="fas fa-magic"></i> Generate Demo Signal
+                    </button>
+                </div>
+
                 <div class="add-signal-form">
                     <div class="form-group">
                         <label for="signal-symbol">Symbol</label>
@@ -698,6 +733,31 @@
             }
         }
 
+        // Generate demo signal
+        async function generateDemoSignal() {
+            try {
+                showNotification('🎯 Generating demo signal...', 'success');
+
+                const response = await fetch('/api/generate-demo-signal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(`✅ Demo signal generated: ${result.signal.signal_type} ${result.signal.symbol}`, 'success');
+                    loadSignals();
+                    updateStatistics();
+                } else {
+                    showNotification(`❌ ${result.error || 'Failed to generate demo signal'}`, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Error generating demo signal:', error);
+                showNotification('❌ Network error. Please try again.', 'error');
+            }
+        }
+
         // Load watchlist
         async function loadWatchlist() {
             try {
@@ -757,13 +817,16 @@
                     <div class="empty-state">
                         <i class="fas fa-signal"></i>
                         <p>No trading signals yet</p>
-                        <small>Add a signal to get started</small>
+                        <small>Add a signal or generate a demo signal to get started</small>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = signals.map(signal => `
+            // Sort signals by timestamp (newest first)
+            const sortedSignals = [...signals].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            container.innerHTML = sortedSignals.map(signal => `
                 <div class="signal-item ${signal.signal_type.toLowerCase()} fade-in">
                     <div class="signal-header">
                         <div class="signal-type">
