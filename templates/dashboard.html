@@ -61,10 +61,6 @@
             text-align: center;
             margin-bottom: 20px;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #fff, #f0f9ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .status-bar {
@@ -85,11 +81,6 @@
             color: white;
             font-weight: 500;
             transition: all 0.3s ease;
-        }
-
-        .status-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
         }
 
         .status-dot {
@@ -123,11 +114,6 @@
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .stat-number {
@@ -171,10 +157,6 @@
             box-shadow: var(--shadow);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
         }
 
         .card h2 {
@@ -234,7 +216,6 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            transform: translateY(-1px);
         }
 
         /* Button Styles */
@@ -269,11 +250,6 @@
             color: white;
         }
 
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 0.8rem;
-        }
-
         /* Watchlist Styles */
         .watchlist-container {
             max-height: 500px;
@@ -303,16 +279,6 @@
             font-weight: 700;
             color: var(--text-primary);
             font-size: 1.1rem;
-        }
-
-        .symbol-info {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .price-info {
-            text-align: right;
         }
 
         .price {
@@ -350,11 +316,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
-        .signal-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
         .signal-item.buy {
             border-left-color: var(--success-color);
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
@@ -388,7 +349,7 @@
 
         .signal-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 12px;
             margin-top: 15px;
         }
@@ -399,7 +360,6 @@
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .signal-detail-label {
@@ -408,118 +368,12 @@
             margin-bottom: 4px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .signal-detail-value {
             font-weight: 700;
             color: var(--text-primary);
             font-size: 1rem;
-        }
-
-        /* Confidence Badge */
-        .confidence-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .confidence-high { background: var(--success-color); color: white; }
-        .confidence-medium { background: var(--warning-color); color: white; }
-        .confidence-low { background: var(--text-secondary); color: white; }
-
-        /* Account Info */
-        .account-balance {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .balance-card {
-            text-align: center;
-            padding: 20px;
-            border-radius: 16px;
-            border: 2px solid var(--border-color);
-        }
-
-        .balance-card.usdt {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-color: var(--success-color);
-        }
-
-        .balance-card.btc {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border-color: var(--warning-color);
-        }
-
-        .balance-amount {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-
-        .balance-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        /* Top Symbols */
-        .top-symbol-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            margin: 8px 0;
-            background: var(--light-color);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .top-symbol-item:hover {
-            background: white;
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Notifications */
-        .notification {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            padding: 18px 24px;
-            border-radius: 16px;
-            color: white;
-            font-weight: 600;
-            z-index: 1000;
-            animation: slideIn 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
-            max-width: 400px;
-        }
-
-        .notification.success {
-            background: linear-gradient(135deg, var(--success-color), #059669);
-        }
-
-        .notification.error {
-            background: linear-gradient(135deg, var(--danger-color), #dc2626);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
         }
 
         /* Loading States */
@@ -544,151 +398,156 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Chart Container */
-        .chart-container {
-            position: relative;
-            height: 250px;
-            margin-top: 20px;
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 18px 24px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .notification.success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
         }
 
-        ::-webkit-scrollbar-track {
-            background: var(--light-color);
-            border-radius: 10px;
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: var(--text-secondary);
-            border-radius: 10px;
+        /* Error state */
+        .error-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--danger-color);
+            background: #fee2e2;
+            border-radius: 12px;
+            margin: 10px 0;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .signal-details {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .status-bar {
-                grid-template-columns: 1fr;
-            }
+            .container { padding: 15px; }
+            .header h1 { font-size: 2rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .signal-details {
-                grid-template-columns: 1fr;
-            }
-
-            .account-balance {
-                grid-template-columns: 1fr;
-            }
+            .stats-grid { grid-template-columns: 1fr; }
+            .signal-details { grid-template-columns: 1fr; }
         }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Additional Utility Classes */
-        .text-success { color: var(--success-color); }
-        .text-danger { color: var(--danger-color); }
-        .text-warning { color: var(--warning-color); }
-        .fw-bold { font-weight: 700; }
-        .text-center { text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header fade-in">
-            <h1><i class="fas fa-rocket"></i> Bitcoin Signals Dashboard</h1>
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Bitcoin Signals Dashboard</h1>
             <div class="status-bar">
                 <div class="status-item">
-                    <div class="status-dot"></div>
-                    <i class="fas fa-chart-line"></i>
-                    <span>Live Market Data</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-wifi"></i>
-                    <span id="connection-status">Connecting...</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-signal"></i>
-                    <span id="total-signals">0 Signals</span>
+                    <div class="status-dot" id="connection-status"></div>
+                    <span id="connection-text">Connecting...</span>
                 </div>
                 <div class="status-item">
                     <i class="fas fa-clock"></i>
-                    <span id="last-update">Never</span>
+                    <span id="current-time">--:--:--</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-signal"></i>
+                    <span>Live Trading Signals</span>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="stats-grid fade-in">
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-signals">0</div>
+                <div class="stat-label">Total Signals</div>
+            </div>
             <div class="stat-card">
                 <div class="stat-number" id="active-signals">0</div>
-                <div class="stat-label"><i class="fas fa-play-circle"></i> Active Signals</div>
+                <div class="stat-label">Active Signals</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="buy-signals">0</div>
-                <div class="stat-label"><i class="fas fa-arrow-up"></i> Buy Signals</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="sell-signals">0</div>
-                <div class="stat-label"><i class="fas fa-arrow-down"></i> Sell Signals</div>
+                <div class="stat-number" id="watchlist-count">0</div>
+                <div class="stat-label">Watchlist</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="success-rate">0%</div>
-                <div class="stat-label"><i class="fas fa-percentage"></i> Success Rate</div>
+                <div class="stat-label">Success Rate</div>
             </div>
         </div>
 
         <!-- Main Dashboard Grid -->
-        <div class="dashboard-grid fade-in">
-            <!-- Watchlist -->
+        <div class="dashboard-grid">
+            <!-- Add Signal Card -->
             <div class="card">
-                <h2><i class="fas fa-gem"></i> Watchlist</h2>
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <input type="text" id="new-symbol" placeholder="Add symbol (e.g., BTC, ETH)" style="margin-bottom: 10px;">
-                    <button class="btn btn-primary" onclick="addToWatchlist()">
-                        <i class="fas fa-plus"></i> Add Symbol
+                <h2><i class="fas fa-plus-circle"></i> Add Signal</h2>
+                <div class="add-signal-form">
+                    <div class="form-group">
+                        <label for="signal-symbol">Symbol</label>
+                        <input type="text" id="signal-symbol" placeholder="e.g., BTCUSDT, ETH" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signal-type">Signal Type</label>
+                            <select id="signal-type">
+                                <option value="BUY">BUY</option>
+                                <option value="SELL">SELL</option>
+                                <option value="HOLD">HOLD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="signal-confidence">Confidence</label>
+                            <select id="signal-confidence">
+                                <option value="HIGH">HIGH</option>
+                                <option value="MEDIUM">MEDIUM</option>
+                                <option value="LOW">LOW</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="target-price">Target Price (Optional)</label>
+                            <input type="number" id="target-price" step="0.01" placeholder="0.00" />
+                        </div>
+                        <div class="form-group">
+                            <label for="stop-loss">Stop Loss (Optional)</label>
+                            <input type="number" id="stop-loss" step="0.01" placeholder="0.00" />
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSignal()">
+                        <i class="fas fa-plus"></i> Add Signal
+                    </button>
+                </div>
+
+                <!-- Watchlist -->
+                <h2><i class="fas fa-eye"></i> Watchlist</h2>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <input type="text" id="new-symbol" placeholder="Add symbol (e.g., BTCUSDT)" />
+                    <button class="btn btn-success" onclick="addToWatchlist()" style="margin-top: 10px;">
+                        <i class="fas fa-plus"></i> Add to Watchlist
                     </button>
                 </div>
                 <div class="watchlist-container" id="watchlist-container">
@@ -701,50 +560,7 @@
 
             <!-- Signals Feed -->
             <div class="card">
-                <h2><i class="fas fa-broadcast-tower"></i> Trading Signals</h2>
-                <div class="add-signal-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="signal-symbol"><i class="fas fa-coins"></i> Symbol</label>
-                            <input type="text" id="signal-symbol" placeholder="BTC, ETH, etc.">
-                        </div>
-                        <div class="form-group">
-                            <label for="signal-type"><i class="fas fa-exchange-alt"></i> Signal Type</label>
-                            <select id="signal-type">
-                                <option value="BUY">📈 Buy</option>
-                                <option value="SELL">📉 Sell</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="signal-price"><i class="fas fa-dollar-sign"></i> Entry Price</label>
-                            <input type="number" id="signal-price" placeholder="Optional" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="signal-target"><i class="fas fa-bullseye"></i> Target Price</label>
-                            <input type="number" id="signal-target" placeholder="Optional" step="0.01">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="signal-stop"><i class="fas fa-stop-circle"></i> Stop Loss</label>
-                            <input type="number" id="signal-stop" placeholder="Optional" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label for="signal-confidence"><i class="fas fa-star"></i> Confidence</label>
-                            <select id="signal-confidence">
-                                <option value="HIGH">🔥 High</option>
-                                <option value="MEDIUM">⚡ Medium</option>
-                                <option value="LOW">💫 Low</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-success" onclick="addSignal()">
-                        <i class="fas fa-plus-circle"></i> Add Signal
-                    </button>
-                </div>
-
+                <h2><i class="fas fa-signal"></i> Trading Signals</h2>
                 <div class="signals-container" id="signals-container">
                     <div class="loading">
                         <div class="spinner"></div>
@@ -753,9 +569,9 @@
                 </div>
             </div>
 
-            <!-- Account & Analytics -->
+            <!-- Account & Market Info -->
             <div class="card">
-                <h2><i class="fas fa-chart-bar"></i> Account & Analytics</h2>
+                <h2><i class="fas fa-wallet"></i> Account Info</h2>
                 <div id="account-info">
                     <div class="loading">
                         <div class="spinner"></div>
@@ -763,24 +579,12 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 30px;">
-                    <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-fire"></i> Top Symbols
-                    </h3>
-                    <div id="top-symbols">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            Loading top symbols...
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 30px;">
-                    <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-chart-line"></i> Performance
-                    </h3>
-                    <div class="chart-container">
-                        <canvas id="performance-chart"></canvas>
+                <!-- Market Overview -->
+                <h2 style="margin-top: 30px;"><i class="fas fa-chart-bar"></i> Top Symbols</h2>
+                <div id="top-symbols">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading top symbols...
                     </div>
                 </div>
             </div>
@@ -789,349 +593,326 @@
 
     <script>
         // Global variables
-        let socket;
+        let socket = null;
         let signals = [];
         let watchlist = [];
         let accountInfo = null;
-        let performanceChart = null;
 
-        // Initialize the dashboard
+        // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dashboard loading...');
             initializeSocket();
             loadInitialData();
-            updateLastUpdate();
-            setInterval(updateStats, 5000);
-            setInterval(updateLastUpdate, 1000);
+            updateTime();
+            setInterval(updateTime, 1000);
         });
 
-        // Initialize WebSocket connection
+        // Socket.IO connection
         function initializeSocket() {
-            socket = io();
+            try {
+                socket = io();
 
-            socket.on('connect', function() {
-                updateConnectionStatus('Connected', true);
-                showNotification('🟢 Connected to dashboard', 'success');
-            });
+                socket.on('connect', function() {
+                    console.log('✅ Connected to server');
+                    updateConnectionStatus(true);
+                });
 
-            socket.on('disconnect', function() {
-                updateConnectionStatus('Disconnected', false);
-                showNotification('🔴 Disconnected from server', 'error');
-            });
+                socket.on('disconnect', function() {
+                    console.log('❌ Disconnected from server');
+                    updateConnectionStatus(false);
+                });
 
-            socket.on('new_signal', function(signal) {
-                addSignalToFeed(signal);
-                updateStats();
-                showNotification(`🚨 New ${signal.signal_type} signal for ${signal.symbol}`, 'success');
-            });
+                socket.on('new_signal', function(data) {
+                    console.log('📡 New signal received:', data);
+                    addSignalToList(data);
+                    showNotification(`🚨 New ${data.signal_type} signal for ${data.symbol}`, 'success');
+                });
 
-            socket.on('market_update', function(data) {
-                updateWatchlistItem(data);
-                updateLastUpdate();
-            });
-        }
+                socket.on('market_update', function(data) {
+                    console.log('📊 Market update:', data);
+                    updateWatchlistItem(data);
+                });
 
-        // Load initial data
-        function loadInitialData() {
-            Promise.all([
-                fetch('/api/signals').then(r => r.json()),
-                fetch('/api/watchlist').then(r => r.json()),
-                fetch('/api/account').then(r => r.json().catch(() => null)),
-                fetch('/api/top-symbols').then(r => r.json())
-            ]).then(([signalsData, watchlistData, accountData, topSymbols]) => {
-                signals = signalsData || [];
-                watchlist = watchlistData || [];
-                accountInfo = accountData;
+                socket.on('connected', function(data) {
+                    console.log('🔗 Socket connected:', data);
+                });
 
-                updateSignalsFeed();
-                updateWatchlist();
-                updateAccountInfo();
-                updateTopSymbols(topSymbols || []);
-                updateStats();
-                initializeChart();
-            }).catch(error => {
-                console.error('Error loading initial data:', error);
-                showNotification('❌ Error loading data', 'error');
-            });
+            } catch (error) {
+                console.error('❌ Socket initialization error:', error);
+                updateConnectionStatus(false);
+            }
         }
 
         // Update connection status
-        function updateConnectionStatus(status, connected) {
-            const statusElement = document.getElementById('connection-status');
-            statusElement.textContent = status;
-            statusElement.style.color = connected ? '#10b981' : '#ef4444';
-        }
+        function updateConnectionStatus(connected) {
+            const statusDot = document.getElementById('connection-status');
+            const statusText = document.getElementById('connection-text');
 
-        // Update last update time
-        function updateLastUpdate() {
-            document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
-        }
-
-        // Show notification
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        }
-
-        // Add signal to feed
-        function addSignalToFeed(signal) {
-            signals.unshift(signal);
-            if (signals.length > 100) {
-                signals = signals.slice(0, 100);
+            if (connected) {
+                statusDot.style.background = '#10b981';
+                statusText.textContent = 'Connected';
+            } else {
+                statusDot.style.background = '#ef4444';
+                statusText.textContent = 'Disconnected';
             }
-            updateSignalsFeed();
         }
 
-        // Update signals feed
-        function updateSignalsFeed() {
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString();
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            console.log('📊 Loading initial data...');
+
+            try {
+                await Promise.all([
+                    loadSignals(),
+                    loadWatchlist(),
+                    loadAccountInfo(),
+                    loadTopSymbols()
+                ]);
+                updateStatistics();
+            } catch (error) {
+                console.error('❌ Error loading initial data:', error);
+                showNotification('❌ Error loading dashboard data', 'error');
+            }
+        }
+
+        // Load signals
+        async function loadSignals() {
+            try {
+                const response = await fetch('/api/signals');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                signals = Array.isArray(data) ? data : [];
+                renderSignals();
+                console.log(`✅ Loaded ${signals.length} signals`);
+            } catch (error) {
+                console.error('❌ Error loading signals:', error);
+                document.getElementById('signals-container').innerHTML =
+                    '<div class="error-state">Failed to load signals. Please refresh the page.</div>';
+            }
+        }
+
+        // Load watchlist
+        async function loadWatchlist() {
+            try {
+                const response = await fetch('/api/watchlist');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                watchlist = Array.isArray(data) ? data : [];
+                renderWatchlist();
+                console.log(`✅ Loaded ${watchlist.length} watchlist items`);
+            } catch (error) {
+                console.error('❌ Error loading watchlist:', error);
+                document.getElementById('watchlist-container').innerHTML =
+                    '<div class="error-state">Failed to load watchlist</div>';
+            }
+        }
+
+        // Load account info
+        async function loadAccountInfo() {
+            try {
+                const response = await fetch('/api/account');
+                if (response.ok) {
+                    accountInfo = await response.json();
+                    renderAccountInfo();
+                    console.log('✅ Account info loaded');
+                } else {
+                    renderAccountInfo(null);
+                }
+            } catch (error) {
+                console.error('❌ Error loading account info:', error);
+                renderAccountInfo(null);
+            }
+        }
+
+        // Load top symbols
+        async function loadTopSymbols() {
+            try {
+                const response = await fetch('/api/top-symbols');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                renderTopSymbols(Array.isArray(data) ? data : []);
+                console.log(`✅ Loaded ${data.length} top symbols`);
+            } catch (error) {
+                console.error('❌ Error loading top symbols:', error);
+                document.getElementById('top-symbols').innerHTML =
+                    '<div class="error-state">Failed to load top symbols</div>';
+            }
+        }
+
+        // Render functions
+        function renderSignals() {
             const container = document.getElementById('signals-container');
 
             if (signals.length === 0) {
                 container.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-inbox"></i>
-                        <p>No signals yet. Add your first signal!</p>
+                    <div class="empty-state">
+                        <i class="fas fa-signal"></i>
+                        <p>No trading signals yet</p>
+                        <small>Add a signal to get started</small>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = signals.map(signal => `
-                <div class="signal-item ${signal.signal_type.toLowerCase()}">
+                <div class="signal-item ${signal.signal_type.toLowerCase()} fade-in">
                     <div class="signal-header">
-                        <div>
-                            <span class="signal-type">
-                                <i class="fas fa-${signal.signal_type === 'BUY' ? 'arrow-up' : 'arrow-down'}"></i>
-                                ${signal.signal_type} ${signal.symbol}
-                            </span>
-                            ${signal.confidence ? `<span class="confidence-badge confidence-${signal.confidence.toLowerCase()}">${signal.confidence}</span>` : ''}
+                        <div class="signal-type">
+                            <i class="fas fa-${signal.signal_type === 'BUY' ? 'arrow-up' : signal.signal_type === 'SELL' ? 'arrow-down' : 'minus'}"></i>
+                            ${signal.signal_type} ${signal.symbol}
                         </div>
                         <div class="signal-timestamp">
-                            <i class="fas fa-clock"></i> ${formatTimestamp(signal.timestamp)}
+                            ${formatTimestamp(signal.timestamp)}
                         </div>
                     </div>
                     <div class="signal-details">
-                        ${signal.binance_price ? `<div class="signal-detail">
-                            <div class="signal-detail-label">Current Price</div>
-                            <div class="signal-detail-value">${formatNumber(signal.binance_price)}</div>
-                        </div>` : ''}
-                        ${signal.price ? `<div class="signal-detail">
-                            <div class="signal-detail-label">Entry Price</div>
-                            <div class="signal-detail-value">${formatNumber(signal.price)}</div>
-                        </div>` : ''}
-                        ${signal.target_price ? `<div class="signal-detail">
-                            <div class="signal-detail-label">Target</div>
-                            <div class="signal-detail-value">${formatNumber(signal.target_price)}</div>
-                        </div>` : ''}
-                        ${signal.stop_loss ? `<div class="signal-detail">
-                            <div class="signal-detail-label">Stop Loss</div>
-                            <div class="signal-detail-value">${formatNumber(signal.stop_loss)}</div>
-                        </div>` : ''}
-                        ${signal.change_24h !== null && signal.change_24h !== undefined ? `<div class="signal-detail">
-                            <div class="signal-detail-label">24h Change</div>
-                            <div class="signal-detail-value ${signal.change_24h >= 0 ? 'text-success' : 'text-danger'}">
-                                ${signal.change_24h >= 0 ? '+' : ''}${signal.change_24h.toFixed(2)}%
+                        ${signal.price ? `
+                            <div class="signal-detail">
+                                <div class="signal-detail-label">Price</div>
+                                <div class="signal-detail-value">$${formatNumber(signal.price)}</div>
                             </div>
-                        </div>` : ''}
-                        ${signal.volume_24h ? `<div class="signal-detail">
-                            <div class="signal-detail-label">24h Volume</div>
-                            <div class="signal-detail-value">${formatVolume(signal.volume_24h)}</div>
-                        </div>` : ''}
-                    </div>
-                    <div style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-source"></i>
-                        <span>Source: ${signal.source}</span>
+                        ` : ''}
+                        ${signal.target_price ? `
+                            <div class="signal-detail">
+                                <div class="signal-detail-label">Target</div>
+                                <div class="signal-detail-value">$${formatNumber(signal.target_price)}</div>
+                            </div>
+                        ` : ''}
+                        ${signal.stop_loss ? `
+                            <div class="signal-detail">
+                                <div class="signal-detail-label">Stop Loss</div>
+                                <div class="signal-detail-value">$${formatNumber(signal.stop_loss)}</div>
+                            </div>
+                        ` : ''}
+                        ${signal.confidence ? `
+                            <div class="signal-detail">
+                                <div class="signal-detail-label">Confidence</div>
+                                <div class="signal-detail-value">${signal.confidence}</div>
+                            </div>
+                        ` : ''}
+                        <div class="signal-detail">
+                            <div class="signal-detail-label">Source</div>
+                            <div class="signal-detail-value">${signal.source || 'Manual'}</div>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Update watchlist
-        function updateWatchlist() {
+        function renderWatchlist() {
             const container = document.getElementById('watchlist-container');
 
             if (watchlist.length === 0) {
                 container.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-list"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-eye-slash"></i>
                         <p>No symbols in watchlist</p>
+                        <small>Add symbols to monitor their prices</small>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = watchlist.map(item => `
-                <div class="watchlist-item" onclick="requestMarketUpdate('${item.symbol}')">
+                <div class="watchlist-item" data-symbol="${item.symbol}">
                     <div>
                         <div class="symbol">${item.symbol}</div>
-                        <div class="symbol-info">
-                            <i class="fas fa-chart-area"></i> Vol: ${formatVolume(item.volume)}
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                            Vol: ${formatVolume(item.volume || 0)}
                         </div>
                     </div>
-                    <div class="price-info">
-                        <div class="price">${formatNumber(item.price)}</div>
+                    <div style="text-align: right;">
+                        <div class="price">$${formatNumber(item.price || 0)}</div>
                         <div class="change ${item.change_24h >= 0 ? 'positive' : 'negative'}">
-                            <i class="fas fa-${item.change_24h >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
-                            ${item.change_24h >= 0 ? '+' : ''}${item.change_24h.toFixed(2)}%
+                            ${item.change_24h >= 0 ? '+' : ''}${(item.change_24h || 0).toFixed(2)}%
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Update watchlist item
-        function updateWatchlistItem(data) {
-            const index = watchlist.findIndex(item => item.symbol === data.symbol);
-            if (index !== -1) {
-                watchlist[index] = data;
-                updateWatchlist();
-            }
-        }
-
-        // Request market update
-        function requestMarketUpdate(symbol) {
-            socket.emit('request_market_update', { symbol: symbol });
-            showNotification(`📊 Updating ${symbol} data...`, 'success');
-        }
-
-        // Update account info
-        function updateAccountInfo() {
+        function renderAccountInfo(account) {
             const container = document.getElementById('account-info');
 
-            if (!accountInfo) {
+            if (!account) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 30px; color: var(--text-secondary);">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 15px;"></i>
-                        <p style="font-weight: 600; margin-bottom: 10px;">Account info not available</p>
-                        <p style="font-size: 0.9rem;">Configure Binance API keys to view account details</p>
+                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                        <p>Account info not available</p>
+                        <small>Connect your exchange account to view balances</small>
                     </div>
                 `;
                 return;
             }
 
-            const totalBalanceUSDT = accountInfo.balances?.find(b => b.asset === 'USDT')?.total || 0;
-            const totalBalanceBTC = accountInfo.total_balance_btc || 0;
+            const usdtBalance = account.balances?.find(b => b.asset === 'USDT')?.total || 0;
+            const btcBalance = account.balances?.find(b => b.asset === 'BTC')?.total || 0;
 
             container.innerHTML = `
-                <div class="account-balance">
-                    <div class="balance-card usdt">
-                        <div class="balance-amount text-success">${formatNumber(totalBalanceUSDT)}</div>
-                        <div class="balance-label">
-                            <i class="fas fa-dollar-sign"></i> USDT Balance
-                        </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div style="text-align: center; padding: 20px; border-radius: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid var(--success-color);">
+                        <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 5px;">${formatNumber(usdtBalance)}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;">USDT</div>
                     </div>
-                    <div class="balance-card btc">
-                        <div class="balance-amount text-warning">₿${totalBalanceBTC.toFixed(6)}</div>
-                        <div class="balance-label">
-                            <i class="fab fa-bitcoin"></i> BTC Balance
-                        </div>
+                    <div style="text-align: center; padding: 20px; border-radius: 16px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid var(--warning-color);">
+                        <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 5px;">${formatNumber(btcBalance)}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 600;">BTC</div>
                     </div>
                 </div>
-
-                <div style="display: grid; gap: 12px; margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--light-color); border-radius: 10px;">
-                        <span><i class="fas fa-user-circle"></i> Account Type:</span>
-                        <span class="fw-bold">${accountInfo.account_type}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--light-color); border-radius: 10px;">
-                        <span><i class="fas fa-exchange-alt"></i> Trading:</span>
-                        <span style="color: ${accountInfo.can_trade ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
-                            <i class="fas fa-${accountInfo.can_trade ? 'check-circle' : 'times-circle'}"></i>
-                            ${accountInfo.can_trade ? 'Enabled' : 'Disabled'}
-                        </span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--light-color); border-radius: 10px;">
-                        <span><i class="fas fa-coins"></i> Withdrawals:</span>
-                        <span style="color: ${accountInfo.can_withdraw ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">
-                            <i class="fas fa-${accountInfo.can_withdraw ? 'check-circle' : 'times-circle'}"></i>
-                            ${accountInfo.can_withdraw ? 'Enabled' : 'Disabled'}
-                        </span>
-                    </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                    <div>Account Type: <strong>${account.account_type || 'Unknown'}</strong></div>
+                    <div>Trading: <strong>${account.can_trade ? 'Enabled' : 'Disabled'}</strong></div>
                 </div>
-
-                ${accountInfo.balances && accountInfo.balances.length > 0 ? `
-                <div>
-                    <h4 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-wallet"></i> Top Balances
-                    </h4>
-                    ${accountInfo.balances.slice(0, 5).map(balance => `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin: 6px 0; background: white; border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                            <span style="font-weight: 600;">${balance.asset}</span>
-                            <span style="font-weight: 700;">${formatNumber(balance.total)}</span>
-                        </div>
-                    `).join('')}
-                </div>
-                ` : ''}
             `;
         }
 
-        // Update top symbols
-        function updateTopSymbols(symbols) {
+        function renderTopSymbols(symbols) {
             const container = document.getElementById('top-symbols');
 
-            if (!symbols || symbols.length === 0) {
+            if (symbols.length === 0) {
                 container.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-chart-bar"></i>
-                        <p>No symbols available</p>
-                    </div>
+                    <div class="error-state">No symbols available</div>
                 `;
                 return;
             }
 
-            container.innerHTML = symbols.slice(0, 10).map((symbol, index) => `
+            container.innerHTML = symbols.slice(0, 10).map(symbol => `
                 <div class="top-symbol-item" onclick="addSymbolToWatchlist('${symbol}')">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="background: var(--primary-color); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
-                            ${index + 1}
-                        </span>
-                        <span style="font-weight: 600;">${symbol}</span>
-                    </div>
-                    <button class="btn btn-primary btn-small">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
+                    <span style="font-weight: 600;">${symbol}</span>
+                    <i class="fas fa-plus" style="color: var(--primary-color);"></i>
                 </div>
             `).join('');
         }
 
         // Update statistics
-        function updateStats() {
-            const activeSignals = signals.filter(s => s.status === 'ACTIVE' || !s.status).length;
-            const buySignals = signals.filter(s => s.signal_type === 'BUY').length;
-            const sellSignals = signals.filter(s => s.signal_type === 'SELL').length;
-            const successRate = calculateSuccessRate();
+        function updateStatistics() {
+            document.getElementById('total-signals').textContent = signals.length;
+            document.getElementById('active-signals').textContent = signals.filter(s => s.status === 'ACTIVE').length;
+            document.getElementById('watchlist-count').textContent = watchlist.length;
 
-            document.getElementById('active-signals').textContent = activeSignals;
-            document.getElementById('buy-signals').textContent = buySignals;
-            document.getElementById('sell-signals').textContent = sellSignals;
+            // Calculate success rate (simplified)
+            const executedSignals = signals.filter(s => s.status === 'EXECUTED');
+            const successRate = executedSignals.length > 0 ?
+                Math.round((executedSignals.filter(s => (s.pnl || 0) > 0).length / executedSignals.length) * 100) : 0;
             document.getElementById('success-rate').textContent = successRate + '%';
-            document.getElementById('total-signals').textContent = signals.length + ' Signals';
         }
 
-        // Calculate success rate
-        function calculateSuccessRate() {
-            if (signals.length === 0) return 0;
-
-            const completedSignals = signals.filter(s => s.status === 'EXECUTED');
-            if (completedSignals.length === 0) return Math.floor(Math.random() * 20) + 65; // Demo data
-
-            const successfulSignals = completedSignals.filter(s => s.pnl && s.pnl > 0);
-            return Math.round((successfulSignals.length / completedSignals.length) * 100);
-        }
-
-        // Add signal
-        function addSignal() {
+        // Add new signal
+        async function addSignal() {
             const symbol = document.getElementById('signal-symbol').value.trim();
             const signalType = document.getElementById('signal-type').value;
-            const price = parseFloat(document.getElementById('signal-price').value) || null;
-            const targetPrice = parseFloat(document.getElementById('signal-target').value) || null;
-            const stopLoss = parseFloat(document.getElementById('signal-stop').value) || null;
             const confidence = document.getElementById('signal-confidence').value;
+            const targetPrice = document.getElementById('target-price').value;
+            const stopLoss = document.getElementById('stop-loss').value;
 
             if (!symbol) {
                 showNotification('❌ Please enter a symbol', 'error');
@@ -1141,44 +922,37 @@
             const signalData = {
                 symbol: symbol,
                 signal_type: signalType,
-                price: price,
-                target_price: targetPrice,
-                stop_loss: stopLoss,
                 confidence: confidence
             };
 
-            fetch('/api/signals', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(signalData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            if (targetPrice) signalData.target_price = parseFloat(targetPrice);
+            if (stopLoss) signalData.stop_loss = parseFloat(stopLoss);
+
+            try {
+                const response = await fetch('/api/signals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(signalData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
                     showNotification('✅ Signal added successfully', 'success');
                     clearSignalForm();
+                    loadSignals();
+                    updateStatistics();
                 } else {
-                    showNotification(`❌ ${data.error || 'Error adding signal'}`, 'error');
+                    showNotification(`❌ ${result.error || 'Failed to add signal'}`, 'error');
                 }
-            })
-            .catch(error => {
-                console.error('Error adding signal:', error);
-                showNotification('❌ Error adding signal', 'error');
-            });
-        }
-
-        // Clear signal form
-        function clearSignalForm() {
-            document.getElementById('signal-symbol').value = '';
-            document.getElementById('signal-price').value = '';
-            document.getElementById('signal-target').value = '';
-            document.getElementById('signal-stop').value = '';
+            } catch (error) {
+                console.error('❌ Error adding signal:', error);
+                showNotification('❌ Network error. Please try again.', 'error');
+            }
         }
 
         // Add to watchlist
-        function addToWatchlist() {
+        async function addToWatchlist() {
             const symbol = document.getElementById('new-symbol').value.trim().toUpperCase();
 
             if (!symbol) {
@@ -1186,27 +960,27 @@
                 return;
             }
 
-            fetch('/api/watchlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ symbol: symbol })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            try {
+                const response = await fetch('/api/watchlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ symbol: symbol })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
                     showNotification(`✅ ${symbol} added to watchlist`, 'success');
                     document.getElementById('new-symbol').value = '';
-                    loadInitialData();
+                    loadWatchlist();
+                    updateStatistics();
                 } else {
-                    showNotification(`❌ ${data.error || 'Error adding to watchlist'}`, 'error');
+                    showNotification(`❌ ${result.error || 'Failed to add to watchlist'}`, 'error');
                 }
-            })
-            .catch(error => {
-                console.error('Error adding to watchlist:', error);
-                showNotification('❌ Error adding to watchlist', 'error');
-            });
+            } catch (error) {
+                console.error('❌ Error adding to watchlist:', error);
+                showNotification('❌ Network error. Please try again.', 'error');
+            }
         }
 
         // Add symbol to watchlist from top symbols
@@ -1215,100 +989,47 @@
             addToWatchlist();
         }
 
-        // Initialize performance chart
-        function initializeChart() {
-            const ctx = document.getElementById('performance-chart').getContext('2d');
+        // Clear signal form
+        function clearSignalForm() {
+            document.getElementById('signal-symbol').value = '';
+            document.getElementById('target-price').value = '';
+            document.getElementById('stop-loss').value = '';
+        }
 
-            // Generate sample data for the last 7 days
-            const labels = [];
-            const data = [];
-            const backgroundColors = [];
+        // Update watchlist item with real-time data
+        function updateWatchlistItem(data) {
+            const item = document.querySelector(`[data-symbol="${data.symbol}"]`);
+            if (item) {
+                const priceEl = item.querySelector('.price');
+                const changeEl = item.querySelector('.change');
 
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-                const value = Math.random() * 20 - 10; // Random P&L between -10 and +10
-                data.push(value);
-                backgroundColors.push(value >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)');
-            }
-
-            performanceChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'P&L (%)',
-                        data: data,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#3b82f6',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: 'white',
-                            bodyColor: 'white',
-                            borderColor: '#3b82f6',
-                            borderWidth: 1,
-                            cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    return `P&L: ${context.parsed.y >= 0 ? '+' : ''}${context.parsed.y.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.05)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                },
-                                color: '#6b7280',
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6b7280',
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    }
+                if (priceEl) priceEl.textContent = `$${formatNumber(data.price)}`;
+                if (changeEl) {
+                    changeEl.textContent = `${data.change_24h >= 0 ? '+' : ''}${data.change_24h.toFixed(2)}%`;
+                    changeEl.className = `change ${data.change_24h >= 0 ? 'positive' : 'negative'}`;
                 }
-            });
+            }
+        }
+
+        // Add signal to list (from socket)
+        function addSignalToList(signal) {
+            signals.unshift(signal);
+            renderSignals();
+            updateStatistics();
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
         }
 
         // Utility functions
@@ -1322,67 +1043,44 @@
         }
 
         function formatNumber(number) {
-            if (number >= 1000000) {
-                return (number / 1000000).toFixed(2) + 'M';
-            } else if (number >= 1000) {
-                return (number / 1000).toFixed(2) + 'K';
-            } else if (number >= 1) {
-                return number.toFixed(2);
-            } else {
-                return number.toFixed(6);
-            }
+            if (number >= 1000000) return (number / 1000000).toFixed(2) + 'M';
+            if (number >= 1000) return (number / 1000).toFixed(2) + 'K';
+            if (number >= 1) return number.toFixed(2);
+            return number.toFixed(6);
         }
 
         function formatVolume(volume) {
-            if (volume >= 1000000000) {
-                return (volume / 1000000000).toFixed(1) + 'B';
-            } else if (volume >= 1000000) {
-                return (volume / 1000000).toFixed(1) + 'M';
-            } else if (volume >= 1000) {
-                return (volume / 1000).toFixed(1) + 'K';
-            } else {
-                return volume.toFixed(0);
-            }
+            if (volume >= 1000000000) return (volume / 1000000000).toFixed(1) + 'B';
+            if (volume >= 1000000) return (volume / 1000000).toFixed(1) + 'M';
+            if (volume >= 1000) return (volume / 1000).toFixed(1) + 'K';
+            return volume.toFixed(0);
         }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl/Cmd + Enter to add signal
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                if (document.getElementById('signal-symbol').value.trim()) {
-                    addSignal();
-                }
-            }
-
-            // Escape to clear forms
-            if (e.key === 'Escape') {
-                clearSignalForm();
-                document.getElementById('new-symbol').value = '';
-            }
-        });
 
         // Auto-refresh data every 30 seconds
         setInterval(() => {
             if (socket && socket.connected) {
-                watchlist.forEach(item => {
-                    requestMarketUpdate(item.symbol);
-                });
+                loadWatchlist();
             }
         }, 30000);
 
-        // Error handling for failed requests
+        // Error handling
         window.addEventListener('error', function(e) {
             console.error('Global error:', e.error);
             showNotification('❌ An unexpected error occurred', 'error');
         });
 
-        // Service worker registration for PWA (optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                // Uncomment to enable PWA features
-                // navigator.serviceWorker.register('/sw.js');
-            });
-        }
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (document.getElementById('signal-symbol').value.trim()) {
+                    addSignal();
+                }
+            }
+            if (e.key === 'Escape') {
+                clearSignalForm();
+                document.getElementById('new-symbol').value = '';
+            }
+        });
     </script>
 </body>
 </html>
