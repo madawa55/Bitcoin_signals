@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Signals Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪙 Bitcoin Signals Dashboard</h1>
+            <div class="status" id="status">🔴 Connecting...</div>
+        </header>
+
+        <div class="main-grid">
+            <div class="price-card">
+                <h2>BTC/USDT</h2>
+                <div class="price" id="btc-price">$0.00</div>
+                <div class="change" id="btc-change">0.00%</div>
+                <div class="volume">Volume: <span id="btc-volume">0</span></div>
+            </div>
+
+            <div class="indicators-card">
+                <h3>Technical Indicators</h3>
+                <div class="indicator">
+                    <span>RSI:</span>
+                    <span id="rsi-value" class="indicator-value">50.00</span>
+                </div>
+                <div class="indicator">
+                    <span>MACD:</span>
+                    <span id="macd-value" class="indicator-value">0.00</span>
+                </div>
+                <div class="indicator">
+                    <span>Bollinger Upper:</span>
+                    <span id="bb-upper" class="indicator-value">$0.00</span>
+                </div>
+                <div class="indicator">
+                    <span>Bollinger Lower:</span>
+                    <span id="bb-lower" class="indicator-value">$0.00</span>
+                </div>
+            </div>
+
+            <div class="forecast-card">
+                <h3>📈 Price Forecast</h3>
+                <div class="forecast-item">
+                    <span>Short Term (5m):</span>
+                    <span id="forecast-short" class="forecast-value">$0.00</span>
+                </div>
+                <div class="forecast-item">
+                    <span>Medium Term (15m):</span>
+                    <span id="forecast-medium" class="forecast-value">$0.00</span>
+                </div>
+                <div class="forecast-item">
+                    <span>Confidence:</span>
+                    <span id="forecast-confidence" class="forecast-value">0%</span>
+                </div>
+                <div class="forecast-item">
+                    <span>Trend:</span>
+                    <span id="forecast-trend" class="forecast-value trend-neutral">Neutral</span>
+                </div>
+            </div>
+
+            <div class="levels-card">
+                <h3>📊 Support & Resistance</h3>
+                <div class="levels-section">
+                    <h4>Resistance Levels</h4>
+                    <div id="resistance-levels" class="levels-list">
+                        <div class="no-levels">Calculating...</div>
+                    </div>
+                </div>
+                <div class="levels-section">
+                    <h4>Support Levels</h4>
+                    <div id="support-levels" class="levels-list">
+                        <div class="no-levels">Calculating...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signals-card">
+                <h3>Active Signals</h3>
+                <div id="signals-list" class="signals-list">
+                    <div class="no-signals">No signals detected</div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Price Line Chart</h3>
+                <canvas id="priceChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Candlestick Chart</h3>
+                <canvas id="candlestickChart"></canvas>
+            </div>
+        </div>
+
+        <footer>
+            <p>Last updated: <span id="last-update">Never</span></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
